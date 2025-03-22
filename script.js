@@ -62,7 +62,7 @@ async function generateResult() {
         };
 
         // 发送请求
-        const API_URL = 'https://baizi-tishilalala.vercel.app/api/calculate_bazi';
+        const API_URL = 'https://baizi-tishilalala.vercel.app/calculate_bazi';
         console.log('正在发送请求到:', API_URL);
         console.log('请求数据:', requestData);
 

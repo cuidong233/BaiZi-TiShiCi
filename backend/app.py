@@ -3,25 +3,11 @@ from flask_cors import CORS
 from bazi import get_bazi
 
 app = Flask(__name__)
-# 配置CORS
-CORS(app, resources={
-    r"/*": {
-        "origins": "*",
-        "methods": ["OPTIONS", "POST", "GET"],
-        "allow_headers": ["Content-Type", "Authorization", "Accept", "Origin"]
-    }
-})
+CORS(app)
 
-@app.route('/api/calculate_bazi', methods=['POST', 'OPTIONS'])
+@app.route('/api/calculate_bazi', methods=['POST'])
+@app.route('/calculate_bazi', methods=['POST'])  # 添加一个不带api前缀的路由
 def calculate_bazi():
-    # 处理 OPTIONS 请求
-    if request.method == 'OPTIONS':
-        response = jsonify({'status': 'ok'})
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', '*')
-        response.headers.add('Access-Control-Allow-Methods', '*')
-        return response
-
     try:
         # 获取请求数据
         data = request.get_json()
@@ -69,21 +55,15 @@ def calculate_bazi():
         # 添加姓名
         result['name'] = name
         
-        # 设置响应头
-        response = jsonify(result)
-        response.headers.add('Access-Control-Allow-Origin', '*')
-        response.headers.add('Access-Control-Allow-Headers', '*')
-        response.headers.add('Access-Control-Allow-Methods', '*')
-        return response
+        return jsonify(result)
         
     except Exception as e:
         print(f"计算八字时出错: {str(e)}")  # 调试日志
         return jsonify({'error': '服务器内部错误'}), 500
 
-# 添加健康检查端点
-@app.route('/health', methods=['GET'])
-def health_check():
-    return jsonify({'status': 'healthy'}), 200
+@app.route('/')
+def index():
+    return jsonify({'status': 'ok'})
 
 if __name__ == '__main__':
     app.run(debug=True) 
