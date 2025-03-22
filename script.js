@@ -62,24 +62,32 @@ async function generateResult() {
         };
 
         // 发送请求
-        const response = await fetch('https://your-backend-url/calculate_bazi', {
+        const API_URL = 'https://baizi-tishilalala.vercel.app/api/calculate_bazi';
+        console.log('正在发送请求到:', API_URL);
+        console.log('请求数据:', requestData);
+
+        // 发送POST请求
+        const response = await fetch(API_URL, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(requestData)
         });
 
-        // 获取响应数据
-        const data = await response.json();
-
         // 检查响应状态
         if (!response.ok) {
-            throw new Error(data.error || `请求失败: ${response.status}`);
+            const errorData = await response.text();
+            console.error('服务器响应错误:', errorData);
+            throw new Error(`服务器响应错误: ${response.status}`);
         }
 
+        // 获取响应数据
+        const data = await response.json();
+        console.log('响应数据:', data);
+
         // 显示结果
-        displayResult(data.data);
+        displayResult(data);
 
     } catch (error) {
         console.error('计算错误:', error);
@@ -90,7 +98,10 @@ async function generateResult() {
             resultDiv.innerHTML = `
                 <div class="error-message">
                     计算失败：${error.message}
+                    <br>
+                    <small>请检查网络连接或稍后重试</small>
                 </div>
+                <button onclick="showInputForm()" class="back-button">返回重试</button>
             `;
             resultContainer.style.display = 'block';
             document.getElementById('inputForm').style.display = 'none';

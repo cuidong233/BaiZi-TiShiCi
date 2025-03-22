@@ -1,0 +1,25 @@
+{
+    "version": 2,
+    "builds": [
+        {
+            "src": "app.py",
+            "use": "@vercel/python"
+        }
+    ],
+    "routes": [
+        {
+            "src": "/api/calculate_bazi",
+            "dest": "app.py",
+            "methods": ["POST"]
+        },
+        {
+            "src": "/health",
+            "dest": "app.py",
+            "methods": ["GET"]
+        },
+        {
+            "src": "/(.*)",
+            "dest": "app.py"
+        }
+    ]
+} 
